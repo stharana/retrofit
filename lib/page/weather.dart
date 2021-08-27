@@ -33,18 +33,20 @@ class _WeatherState extends State<Weather> {
         .get('https://www.metaweather.com/api/location/search/?query=ba');
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      setState(() {
-        for (Map user in jsonResponse) {
-          locatioData.add(Data.fromJson(user));
-        }
-      });
+      setState(
+        () {
+          for (Map data in jsonResponse) {
+            locatioData.add(Data.fromJson(data));
+          }
+        },
+      );
     } else {
       throw Exception('Unexpected error occured!');
     }
   }
 
   // This list holds the data for the list view
-  List<Data> _foundUsers = [];
+  List<Data> _foundResult = [];
   List<Data> locatioData = [];
 
   @override
@@ -52,7 +54,7 @@ class _WeatherState extends State<Weather> {
     // at the beginning, all users are shown
     super.initState();
     fetchData();
-    _foundUsers = locatioData;
+    _foundResult = locatioData;
   }
 
   // This function is called whenever the text field changes
@@ -72,7 +74,7 @@ class _WeatherState extends State<Weather> {
 
     // Refresh the UI
     setState(() {
-      _foundUsers = results;
+      _foundResult = results;
     });
   }
 
@@ -91,9 +93,9 @@ class _WeatherState extends State<Weather> {
                   labelText: 'Search Location', suffixIcon: Icon(Icons.search)),
             ),
             Expanded(
-              child: _foundUsers.length > 0
+              child: _foundResult.length > 0
                   ? ListView.builder(
-                      itemCount: _foundUsers.length,
+                      itemCount: _foundResult.length,
                       itemBuilder: (context, index) => Card(
                         color: Colors.blue,
                         margin: EdgeInsets.symmetric(vertical: 10),
@@ -114,7 +116,7 @@ class _WeatherState extends State<Weather> {
                                     padding:
                                         EdgeInsets.only(top: 15, bottom: 5),
                                     child: Text(
-                                      _foundUsers[index].woeid.toString(),
+                                      _foundResult[index].woeid.toString(),
                                       style: TextStyle(
                                           fontSize: 14, color: Colors.white),
                                     ),
@@ -122,7 +124,7 @@ class _WeatherState extends State<Weather> {
                                   Container(
                                     padding: EdgeInsets.only(bottom: 5),
                                     child: Text(
-                                      _foundUsers[index].title,
+                                      _foundResult[index].title,
                                       style: TextStyle(
                                           fontSize: 19, color: Colors.white),
                                     ),
@@ -130,7 +132,7 @@ class _WeatherState extends State<Weather> {
                                   Container(
                                     padding: EdgeInsets.only(bottom: 5),
                                     child: Text(
-                                      '${_foundUsers[index].locationType.toString()}',
+                                      '${_foundResult[index].locationType.toString()}',
                                       style: TextStyle(
                                           fontSize: 14, color: Colors.white),
                                     ),
@@ -139,7 +141,7 @@ class _WeatherState extends State<Weather> {
                                     padding: EdgeInsets.only(bottom: 15),
                                     child: Text(
                                       "longitute: " +
-                                          '${_foundUsers[index].lattlong.toString()}',
+                                          '${_foundResult[index].lattlong.toString()}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.white,
